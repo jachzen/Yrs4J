@@ -670,7 +670,7 @@ public interface YrsLibNativeInterface extends Library {
      */
     Pointer ytransaction_state_vector_v1(YrsTransaction txn, IntByReference len);
 
-     /**
+    /**
      * Returns a delta difference between current state of a transaction's document and a state vector
      * <br>
      * `sv` encoded as a binary payload using lib0 version 1 encoding (which could be generated using
@@ -2741,4 +2741,62 @@ public interface YrsLibNativeInterface extends Library {
      */
     byte ybranch_alive(YrsBranch yrsBranch);
 
+
+    /* ─────  Awareness API  ──────────────────────────────────────────── */
+
+    /**
+     * YAwarenessw* y_awareness_new(YrsDoc*)
+     */
+    Pointer y_awareness_new(YrsDoc doc);
+
+    /**
+     * void y_awareness_destroy(YAwarenessw*)
+     */
+    void y_awareness_destroy(Pointer aw);
+
+    /**
+     * void y_awareness_set_local_state(YAwarenessw*, const char* json)           *
+     * Pass null to clear the local state
+     */
+    void y_awareness_set_local_state(Pointer aw, String json /* @Nullable */);
+
+    /**
+     * char* y_awareness_get_local_state(YAwarenessw*)                           *
+     * Returns NULL when no local state has been set.                            *
+     * Free the returned pointer with ystring_destroy.
+     */
+    Pointer y_awareness_get_local_state(Pointer aw);
+
+    /**
+     * uint8_t* y_awareness_encode_update(YAwarenessw*,                          *
+     * const uint64_t* clientIds ,                       *
+     * int len, IntByReference outLen)                                   *
+     * When you’re done with the returned buffer call                            *
+     * ybinary_destroy(ptr, outLen.getValue())
+     */
+    Pointer y_awareness_encode_update(Pointer aw,
+                                      long[] clientIds /* @Nullable */,
+                                      int len,
+                                      IntByReference outLen);
+
+    /**
+     * void y_awareness_apply_update(YAwarenessw*, const uint8_t* data, int len)
+     */
+    void y_awareness_apply_update(Pointer aw, Pointer data, int len);
+
+    /** void y_awareness_remove_states(YAwarenessw*, long* ids, int len) */
+    void y_awareness_remove_states(Pointer aw, long[] clientIds, int len);
+
+    /** char* y_awareness_get_states(YAwarenessw*) – free with ystring_destroy */
+    Pointer y_awareness_get_states(Pointer aw);
+
+    /** YStickyIndex* ysticky_index_from_json(const char* json) */
+    YrsStickyIndex ysticky_index_from_json(String json);
+
+    /** char* ysticky_index_to_json(const YStickyIndex*)   (free with ystring_destroy) */
+    Pointer ysticky_index_to_json(YrsStickyIndex pos);
+
+    Pointer y_absolute_from_sticky_index(YrsStickyIndex sticky, YrsDoc doc);
+    /* struct layout: uint32 index @0, int8 assoc @4 */
+    void    y_absolute_position_destroy(Pointer abs);
 }

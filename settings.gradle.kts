@@ -1,4 +1,8 @@
-
+pluginManagement {
+    plugins {
+        kotlin("jvm") version "2.1.10"
+    }
+}
 rootProject.name = "yrs4j"
 include("yrs4j-bindings")
 include("yrs4j-native-linux")
