@@ -70,6 +70,7 @@ You need to define the repo in your build script to use the dependencies
 
 ### Mac
 ... Coming soon ...
+set jna.boot.library.path to load native lib from this path without extracting 
 
 # Development
 

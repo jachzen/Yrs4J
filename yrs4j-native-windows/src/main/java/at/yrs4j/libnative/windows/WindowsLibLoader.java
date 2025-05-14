@@ -26,7 +26,11 @@ public class WindowsLibLoader implements LibLoader {
         if (yrsInstance == null) {
             File jnaNativeLib;
             try {
-                jnaNativeLib = Native.extractFromResourcePath(LIB_NAME, WindowsLibLoader.class.getClassLoader());
+                if (System.getProperty("jna.boot.library.path") != null) {
+                    jnaNativeLib = new File(System.getProperty("jna.boot.library.path") + "/" + LIB_NAME);
+                } else {
+                    jnaNativeLib = Native.extractFromResourcePath(LIB_NAME, WindowsLibLoader.class.getClassLoader());
+                }
                 yrsInstance = Native.load(jnaNativeLib.getAbsolutePath(), YrsLibNativeInterface.class);
             } catch (IOException e) {
                 throw new RuntimeException("Your Operating System is not supported", e);
